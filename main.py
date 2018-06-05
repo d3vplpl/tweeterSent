@@ -1,5 +1,6 @@
 import tweepy
 import got3 as got
+import tools
 from textblob import TextBlob
 
 consumer_key = r'HiKfocenZQpF6KdYXLA8omuXr'
@@ -13,19 +14,7 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth)
 
-# public_tweets = api.search('Morawiecki', count = 1000)
 counter = 0
-
-# query = 'python'
-# max_tweets = 1000
-# searched_tweets = [status for status in tweepy.Cursor(api.search, q=query).items(max_tweets)]
-#for tweet in tweepy.Cursor(api.search, q="11bitstudios", count=100, since_id='1',
-#                           max_id='997690519814836224',
-#                           lang="pl").items(100):
-#    counter += 1
-#    print(counter)
-#    print(tweet.created_at, tweet.id, tweet.text)
-    # print(tweet.id)
 
 
 def getOlderTweets():
