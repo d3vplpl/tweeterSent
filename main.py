@@ -1,5 +1,6 @@
 import tweepy
 import got3 as got
+import pandas as pd
 import tools
 from textblob import TextBlob
 
@@ -17,21 +18,15 @@ api = tweepy.API(auth)
 counter = 0
 
 
-def getOlderTweets():
-    def printTweet(descr, t):
-        print(descr)
-        print("Username: %s" % t.username)
-        print("Retweets: %d" % t.retweets)
-        print("Text: %s" % t.text)
-        print("Mentions: %s" % t.mentions)
-        print("Hashtags: %s\n" % t.hashtags)
+tweetCriteria = got.manager.TweetCriteria().setQuerySearch('11bitstudios').setSince('2018-05-01'). \
+        setUntil('2018-05-27').setMaxTweets(1000)
+tweets = got.manager.TweetManager.getTweets(tweetCriteria)
+tw_list = []
+for tweet in tweets:
+    tw_list.append(tweet.text.encode('utf-8'))
 
-    tweetCriteria = got.manager.TweetCriteria().setQuerySearch('11bitstudios').setSince("2016-05-01"). \
-        setUntil("2018-05-27").setMaxTweets(1000)
-    tweets = got.manager.TweetManager.getTweets(tweetCriteria)
-    for tweet in tweets:
-        print(tweet.text)
-    #printTweet("Tweet", tweet)
-
-
-getOlderTweets()
+df = pd.DataFrame({'review': tw_list}) #review is the body of the tweet (the actual text)
+df['sentiment'] = ''
+df.reindex(['sentiment','review'])
+print(df)
+df.to_csv('saved_tweets.csv', encoding='utf-8', index_label='id', sep='\t')
