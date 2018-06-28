@@ -68,6 +68,8 @@ class TweetManager:
 				tweet.geo = geo
 				tweet.urls = ",".join(urls)
 				tweet.author_id = user_id
+				#added Md
+				tweet.dataMD = dateSec
 				
 				results.append(tweet)
 				resultsAux.append(tweet)

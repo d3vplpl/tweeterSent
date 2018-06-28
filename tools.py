@@ -1,5 +1,8 @@
 import zipfile, requests, os, csv
 import numpy as np
+import pandas as pd
+import tweepy
+import got3 as got
 
 def get_data():
     url = 'http://bossa.pl/pub/metastock/mstock/mstall.zip'
@@ -40,6 +43,35 @@ def prepare_data(ticker):
 
     return closes
             #print(a)
+
+
+def get_Twitter_data():
+
+    consumer_key = r'HiKfocenZQpF6KdYXLA8omuXr'
+    consumer_secret = r'E37pNLbblVQ6Cm2gX2CEqsK5YVm0Jtlhs96BrNTnu8aXfnpw1p'
+
+    access_token = r'253927922-yRXGwbRRoSV5Ant6TL8nTBKxVcApAg9exF4g0YDU'
+    access_token_secret = r'mMI6uKwRDTWcWzyi8ofU31FZ5srjhgDU7h1q65pUrukAu'
+
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+
+    #api = tweepy.API(auth)
+
+    #counter = 0
+
+    tweetCriteria = got.manager.TweetCriteria().setQuerySearch('11bitstudios').setSince('2018-06-01'). \
+        setUntil('2018-06-27').setMaxTweets(1000)
+    tweets = got.manager.TweetManager.getTweets(tweetCriteria)
+    tw_list = []
+    for tweet in tweets:
+        tw_list.append(tweet.text.encode('utf-8'))
+
+    df = pd.DataFrame({'review': tw_list})  # review is the body of the tweet (the actual text)
+    df['sentiment'] = ''
+    df1 = df.reindex(['sentiment', 'review'], axis=1)
+    print(df1)
+    df1.to_csv('saved_tweets.csv', encoding='utf-8', index_label='id', sep='\t')
 
 #get_data()
 #prepare_data('11BIT')
