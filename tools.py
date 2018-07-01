@@ -2,6 +2,7 @@ import zipfile, requests, os, csv
 import numpy as np
 import pandas as pd
 import tweepy
+import secret
 import got3 as got
 
 def get_data():
@@ -47,14 +48,8 @@ def prepare_data(ticker):
 
 def get_Twitter_data():
 
-    consumer_key = r'HiKfocenZQpF6KdYXLA8omuXr'
-    consumer_secret = r'E37pNLbblVQ6Cm2gX2CEqsK5YVm0Jtlhs96BrNTnu8aXfnpw1p'
-
-    access_token = r'253927922-yRXGwbRRoSV5Ant6TL8nTBKxVcApAg9exF4g0YDU'
-    access_token_secret = r'mMI6uKwRDTWcWzyi8ofU31FZ5srjhgDU7h1q65pUrukAu'
-
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
+    auth = tweepy.OAuthHandler(secret.consumer_key, secret.consumer_secret)
+    auth.set_access_token(secret.access_token, secret.access_token_secret)
 
     #api = tweepy.API(auth)
 
