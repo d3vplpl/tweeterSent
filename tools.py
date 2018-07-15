@@ -4,6 +4,7 @@ import pandas as pd
 import tweepy
 import secret
 import got3 as got
+import random
 
 def get_data():
     url = 'http://bossa.pl/pub/metastock/mstock/mstall.zip'
@@ -51,10 +52,6 @@ def get_Twitter_data():
     auth = tweepy.OAuthHandler(secret.consumer_key, secret.consumer_secret)
     auth.set_access_token(secret.access_token, secret.access_token_secret)
 
-    #api = tweepy.API(auth)
-
-    #counter = 0
-
     tweetCriteria = got.manager.TweetCriteria().setQuerySearch('11bitstudios').setSince('2018-06-01'). \
         setUntil('2018-06-27').setMaxTweets(1000)
     tweets = got.manager.TweetManager.getTweets(tweetCriteria)
@@ -63,9 +60,13 @@ def get_Twitter_data():
         tw_list.append(tweet.text.encode('utf-8'))
 
     df = pd.DataFrame({'review': tw_list})  # review is the body of the tweet (the actual text)
-    df['sentiment'] = ''
+    df['sentiment'] = '5'
+    for index,row in df.iterrows():
+       df.set_value(index,'sentiment',random.randint(0,1))
+
+
     df1 = df.reindex(['sentiment', 'review'], axis=1)
-    print(df1)
+    #print(df1)
     df1.to_csv('saved_tweets.csv', encoding='utf-8', index_label='id', sep='\t')
 
 #get_data()
