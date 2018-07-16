@@ -5,6 +5,7 @@ import tools
 from textblob import TextBlob
 import scipy
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve
 from matplotlib import pyplot as plt
@@ -25,7 +26,8 @@ d_test = d[int((1-split)*len(d)):]
 
 #print (d_test['review'])
 
-vectorizer = CountVectorizer()
+#vectorizer = CountVectorizer()
+vectorizer = TfidfVectorizer()
 
 features = vectorizer.fit_transform(d_train.review)
 test_features = vectorizer.transform(d_test.review)
