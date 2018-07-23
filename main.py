@@ -9,6 +9,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve
 from matplotlib import pyplot as plt
+from itertools import product
 
 
 odp = input('Get Twitter data? [y/n]:')
@@ -24,21 +25,14 @@ split = 0.7
 d_train = d[:int(split*len(d))]
 d_test = d[int((1-split)*len(d)):]
 
-#print (d_test['review'])
-
-#vectorizer = CountVectorizer()
-vectorizer = TfidfVectorizer()
-
-features = vectorizer.fit_transform(d_train.review)
-test_features = vectorizer.transform(d_test.review)
-i = 45000
-j = 10
-words = vectorizer.get_feature_names()[i:i+10]
-pd.DataFrame(features[j:j+7, i:i+10].todense(), columns=words)
-
-model1 = MultinomialNB()
-model1.fit(features, d_train.sentiment)
-pred1 = model1.predict_proba(test_features)
+def build_model(max_features=None, min_df=1, nb_alpha=1.0):
+    vectorizer = TfidfVectorizer(max_features=max_features, min_df=min_df)
+    features = vectorizer.fit_transform(d_train.review)
+    model = MultinomialNB(alpha=nb_alpha)
+    model.fit(features, d_train.sentiment)
+    pred = model.predict_proba(vectorizer.transform(d_test.review))
+    return {"max_features": max_features, "min_df": min_df, "nb_alpha": nb_alpha, "auc": roc_auc_score(d_test.sentiment,
+                                                                                                       pred[:,1])}
 
 def performance(y_true, pred, color="g", ann=True):
     print(y_true, pred[:, 1])
@@ -52,4 +46,17 @@ def performance(y_true, pred, color="g", ann=True):
         plt.annotate("Acc: %0.2f" % acc, (0.2, 0.7), size=14)
         plt.annotate("AUC: %0.2f" % auc, (0.2, 0.6), size=14)
     plt.show()
-performance(d_test.sentiment, pred1)
+#performance(d_test.sentiment, pred1)
+
+param_values = {
+"max_features": [10000, 30000, 50000, None],
+"min_df": [1,2,3],
+"nb_alpha": [0.01, 0.1, 1.0]
+}
+results = []
+for p in product(*param_values.values()):
+    res = build_model(**dict(zip(param_values.keys(), p)))
+    results.append( res )
+    print (res)
+
+
