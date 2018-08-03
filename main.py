@@ -11,6 +11,9 @@ from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve
 from matplotlib import pyplot as plt
 from itertools import product
 
+odp = input('Get Bossa data? [y/n]:')
+if odp == 'y':
+    tools.get_data()
 odp = input('Get Twitter data? [y/n]:')
 if odp == 'y':
     tools.get_Twitter_data()
@@ -45,4 +48,21 @@ def performance(y_true, pred, color="g", ann=True):
         plt.annotate("Acc: %0.2f" % acc, (0.2, 0.7), size=14)
         plt.annotate("AUC: %0.2f" % auc, (0.2, 0.6), size=14)
     plt.show()
-performance(d_test.sentiment, pred1)
+#performance(d_test.sentiment, pred1)
+#'max_features': 10000, 'min_df': 1, 'nb_alpha': 0.01, 'auc': 0.8656838656838657}
+res = build_model(10000, 1, 0.01)
+print(res)
+
+def search_for_optimal_params():
+    param_values = {
+    "max_features": [10000, 30000, 50000, None],
+    "min_df": [1, 2, 3],
+    "nb_alpha": [0.01, 0.1, 1.0]
+    }
+    results = []
+    for p in product(*param_values.values()):
+        res = build_model(**dict(zip(param_values.keys(), p)))
+        results.append(res)
+        print(res)
+
+

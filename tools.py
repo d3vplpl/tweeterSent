@@ -8,9 +8,12 @@ import random
 
 def get_data():
     url = 'http://bossa.pl/pub/metastock/mstock/mstall.zip'
-    print('getting stock prices...')
+    print('Getting stock prices...')
     req = requests.get(url)
-    print('getting stock prices succeded')
+    print('Getting stock prices succeded')
+    # check if directory exists, if not create it
+    if not (os.path.isdir("file")):
+        os.mkdir("file")
     stock_file = open(os.path.join('file', os.path.basename(url)), 'wb')
     for chunk in req.iter_content(100000):
         stock_file.write(chunk)
