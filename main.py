@@ -33,6 +33,7 @@ def build_model(max_features=None, min_df=1, nb_alpha=1.0):
     return {"max_features": max_features, "min_df": min_df, "nb_alpha": nb_alpha, "auc": roc_auc_score(d_test.sentiment,
                                                                                                        pred[:, 1])}
 
+
 def search_for_optimal_params():
     param_values = {
     "max_features": [10000, 30000, 50000, None],
@@ -44,6 +45,7 @@ def search_for_optimal_params():
         res = build_model(**dict(zip(param_values.keys(), p)))
         results.append(res)
         print(res)
+
 
 def performance(y_true, pred, color="g", ann=True):
     print(y_true, pred[:, 1])
@@ -60,7 +62,17 @@ def performance(y_true, pred, color="g", ann=True):
 #performance(d_test.sentiment, pred1)
 #'max_features': 10000, 'min_df': 1, 'nb_alpha': 0.01, 'auc': 0.8656838656838657}
 bossa_data = tools.prepare_data('11BIT')
+print (bossa_data)
 res = build_model(10000, 1, 0.01)
 print(res)
 
+def finding_rocket():
+    counter = 0 #we need this to skip first value
+    for day in bossa_data:
 
+        counter += 1
+        if counter > 2 and (float(day) / float(previous_day) > 1.20):
+            print(day)
+        previous_day = day
+
+finding_rocket()
