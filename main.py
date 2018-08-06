@@ -16,12 +16,9 @@ if odp == 'y':
     tools.get_data()
 odp = input('Get Twitter data? [y/n]:')
 if odp == 'y':
-    tools.get_Twitter_data()
-odp = input('Load the twitter data from disk? [y/n]:')
-if odp == 'y':
-    d = pd.read_csv('saved_tweets.csv', delimiter='\t')
-    #d = pd.read_csv("movie_reviews/labeledTrainData.tsv", delimiter="\t")
+    tools.get_Twitter_data('11bitstudios', '2018-01-01', '2018-08-01')
 
+d = pd.read_csv('saved_tweets.csv', delimiter='\t')
 
 split = 0.7
 d_train = d[:int(split*len(d))]
@@ -34,7 +31,19 @@ def build_model(max_features=None, min_df=1, nb_alpha=1.0):
     model.fit(features, d_train.sentiment)
     pred = model.predict_proba(vectorizer.transform(d_test.review))
     return {"max_features": max_features, "min_df": min_df, "nb_alpha": nb_alpha, "auc": roc_auc_score(d_test.sentiment,
-                                                                                                       pred[:,1])}
+                                                                                                       pred[:, 1])}
+
+def search_for_optimal_params():
+    param_values = {
+    "max_features": [10000, 30000, 50000, None],
+    "min_df": [1, 2, 3],
+    "nb_alpha": [0.01, 0.1, 1.0]
+    }
+    results = []
+    for p in product(*param_values.values()):
+        res = build_model(**dict(zip(param_values.keys(), p)))
+        results.append(res)
+        print(res)
 
 def performance(y_true, pred, color="g", ann=True):
     print(y_true, pred[:, 1])
@@ -50,19 +59,8 @@ def performance(y_true, pred, color="g", ann=True):
     plt.show()
 #performance(d_test.sentiment, pred1)
 #'max_features': 10000, 'min_df': 1, 'nb_alpha': 0.01, 'auc': 0.8656838656838657}
+bossa_data = tools.prepare_data('11BIT')
 res = build_model(10000, 1, 0.01)
 print(res)
-
-def search_for_optimal_params():
-    param_values = {
-    "max_features": [10000, 30000, 50000, None],
-    "min_df": [1, 2, 3],
-    "nb_alpha": [0.01, 0.1, 1.0]
-    }
-    results = []
-    for p in product(*param_values.values()):
-        res = build_model(**dict(zip(param_values.keys(), p)))
-        results.append(res)
-        print(res)
 
 

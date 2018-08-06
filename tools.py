@@ -12,14 +12,14 @@ def get_data():
     req = requests.get(url)
     print('Getting stock prices succeded')
     # check if directory exists, if not create it
-    if not (os.path.isdir("file")):
-        os.mkdir("file")
+    if not (os.path.isdir('file')):
+        os.mkdir('file')
     stock_file = open(os.path.join('file', os.path.basename(url)), 'wb')
     for chunk in req.iter_content(100000):
         stock_file.write(chunk)
     stock_file.close()
     zipf = zipfile.ZipFile(os.path.join('file', os.path.basename(url)))
-    zipf.extractall((os.path.join( os.path.curdir, 'mst')))
+    zipf.extractall((os.path.join(os.path.curdir, 'mst')))
 
 # directories file and mst must exist in current dir
 
@@ -40,35 +40,37 @@ def prepare_data(ticker):
         float_list.append([i for i in el])
     n_array = np.array(float_list)
     closes = n_array[:,4]
-    print(closes)
+    #print(closes)
 
     #prev_close = n_array[around_item_indx[0][0] + i, :][4]
     #next_open = n_array[around_item_indx[0][0] + i + 1, :][1]
 
 
     return closes
-            #print(a)
 
 
-def get_Twitter_data():
+def get_Twitter_data(ticker, since, date_to):
 
     auth = tweepy.OAuthHandler(secret.consumer_key, secret.consumer_secret)
     auth.set_access_token(secret.access_token, secret.access_token_secret)
 
-    tweetCriteria = got.manager.TweetCriteria().setQuerySearch('11bitstudios').setSince('2018-06-01'). \
-        setUntil('2018-06-27').setMaxTweets(1000)
+    tweetCriteria = got.manager.TweetCriteria().setQuerySearch(ticker).setSince(since). \
+        setUntil(date_to).setMaxTweets(1000)
     tweets = got.manager.TweetManager.getTweets(tweetCriteria)
     tw_list = []
+    tw_list_dates = []
+    #print(tweets[0].date)
     for tweet in tweets:
         tw_list.append(tweet.text.encode('utf-8'))
-
+        tw_list_dates.append(tweet.date)
     df = pd.DataFrame({'review': tw_list})  # review is the body of the tweet (the actual text)
+    df['date'] = pd.DataFrame({'date': tw_list_dates})
     df['sentiment'] = '5'
     for index,row in df.iterrows():
-       df.set_value(index,'sentiment',random.randint(0,1))
+       df.set_value(index, 'sentiment', random.randint(0,1))
 
 
-    df1 = df.reindex(['sentiment', 'review'], axis=1)
+    df1 = df.reindex(['date','sentiment', 'review'], axis=1)
     #print(df1)
     df1.to_csv('saved_tweets.csv', encoding='utf-8', index_label='id', sep='\t')
 
