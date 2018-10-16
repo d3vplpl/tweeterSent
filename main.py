@@ -62,13 +62,13 @@ def performance(y_true, pred, color="g", ann=True):
 #performance(d_test.sentiment, pred1)
 #'max_features': 10000, 'min_df': 1, 'nb_alpha': 0.01, 'auc': 0.8656838656838657}
 bossa_data = tools.prepare_data('11BIT')
-print (bossa_data)
+print('bossa data: ', bossa_data)
 res = build_model(10000, 1, 0.01)
-print(res)
+print('res: ', res)
 
 def finding_rocket():
     counter = 0 #we need this to skip first value
-    for day in bossa_data:
+    for day in bossa_data['close price']:
 
         counter += 1
         if counter > 2 and (float(day) / float(previous_day) > 1.20):

@@ -26,6 +26,7 @@ def get_data():
 #CURRENT_YEAR = str(date.today().year)
 path_mst = (os.path.join(os.path.curdir, 'mst'))
 
+
 def prepare_data(ticker):
 
     f = open(os.path.join(path_mst, ticker+'.mst'))
@@ -39,14 +40,15 @@ def prepare_data(ticker):
         ticker = el.pop(0) #removes ticker
         float_list.append([i for i in el])
     n_array = np.array(float_list)
-    closes = n_array[:,4]
-    #print(closes)
-
-    #prev_close = n_array[around_item_indx[0][0] + i, :][4]
-    #next_open = n_array[around_item_indx[0][0] + i + 1, :][1]
-
-
-    return closes
+    closes = n_array[:, 4]
+    dates_of_prices = n_array[:, 0]
+    print('dates of prices: ', dates_of_prices)
+    dated_prices = pd.DataFrame(
+        {'date of price': dates_of_prices,
+         'close price': closes
+         })
+    #print('dated_prices: ', dated_prices)
+    return dated_prices
 
 
 def get_Twitter_data(ticker, since, date_to):
@@ -66,7 +68,7 @@ def get_Twitter_data(ticker, since, date_to):
     df = pd.DataFrame({'review': tw_list})  # review is the body of the tweet (the actual text)
     df['date'] = pd.DataFrame({'date': tw_list_dates})
     df['sentiment'] = '5'
-    for index,row in df.iterrows():
+    for index, row in df.iterrows():
        df.set_value(index, 'sentiment', random.randint(0,1))
 
 
