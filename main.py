@@ -65,9 +65,8 @@ def normalize_feature(data, f_min=-1.0, f_max=1.0):
     normalized = f_min + (data - d_min)*factor
     return normalized, factor
 bossa_data = tools.prepare_data('11BIT')
-print('bossa data: ', bossa_data)
-res = build_model(10000, 1, 0.01)
-print('res: ', res)
+#print('bossa data: ', bossa_data)
+
 
 def finding_rocket():
     counter = 0 #we need this to skip first value
@@ -86,7 +85,7 @@ rockets = pd.DataFrame(columns=bossa_data.columns)
 finding_rocket()
 
 d = pd.read_csv('saved_tweets.csv', delimiter='\t')
-
+print('d: ',d)
 d = tools.enrichSavedTweets(d, rockets)
 
 
@@ -94,4 +93,6 @@ split = 0.7
 d_train = d[:int(split*len(d))]
 d_test = d[int((1-split)*len(d)):]
 res = build_model(10000, 1, 0.01)
-print('ROCKETS', rockets)
+
+#print('res: ', res)
+#print('ROCKETS', rockets)
