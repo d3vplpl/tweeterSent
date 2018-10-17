@@ -10,7 +10,7 @@ def get_data():
     url = 'http://bossa.pl/pub/metastock/mstock/mstall.zip'
     print('Getting stock prices...')
     req = requests.get(url)
-    print('Getting stock prices succeded')
+    print('Getting stock prices successful')
     # check if directory exists, if not create it
     if not (os.path.isdir('file')):
         os.mkdir('file')
@@ -26,9 +26,12 @@ def get_data():
 #CURRENT_YEAR = str(date.today().year)
 path_mst = (os.path.join(os.path.curdir, 'mst'))
 
-
 def prepare_data(ticker):
 
+    closes = pd.read_csv(os.path.join(path_mst, ticker+'.mst'))
+    closes.rename(index=str, columns={'<TICKER>': 'Ticker', '<DTYYYYMMDD>': 'Date', '<CLOSE>': 'Close', '<VOL>':'Vol'},inplace=True)
+    return closes
+    # to już koniec! reszta jest obsolete, zwracamy pandas
     f = open(os.path.join(path_mst, ticker+'.mst'))
     cs = csv.reader(f)
     cs_list = list(cs)
@@ -40,17 +43,16 @@ def prepare_data(ticker):
         ticker = el.pop(0) #removes ticker
         float_list.append([i for i in el])
     n_array = np.array(float_list)
-    closes = n_array[:, 4]
-    dates_of_prices = n_array[:, 0]
-    print('dates of prices: ', dates_of_prices)
-    dated_prices = pd.DataFrame(
-        {'date of price': dates_of_prices,
-         'close price': closes
-         })
-    #print('dated_prices: ', dated_prices)
-    return dated_prices
+    closes = n_array[:,4]
+    #print(closes)
+
+    #prev_close = n_array[around_item_indx[0][0] + i, :][4]
+    #next_open = n_array[around_item_indx[0][0] + i + 1, :][1]
 
 
+    return closes
+
+#the result of this method is saved tweets structure csv with fake sentiment
 def get_Twitter_data(ticker, since, date_to):
 
     auth = tweepy.OAuthHandler(secret.consumer_key, secret.consumer_secret)
@@ -69,7 +71,7 @@ def get_Twitter_data(ticker, since, date_to):
     df['date'] = pd.DataFrame({'date': tw_list_dates})
     df['sentiment'] = '5'
     for index, row in df.iterrows():
-       df.set_value(index, 'sentiment', random.randint(0,1))
+       df.set_value(index, 'sentiment', random.randint(0, 1))
 
 
     df1 = df.reindex(['date','sentiment', 'review'], axis=1)
@@ -78,3 +80,9 @@ def get_Twitter_data(ticker, since, date_to):
 
 #get_data()
 #prepare_data('11BIT')
+
+#this method should open the saved tweets csv and using rockets dates fill the sentiments.
+#for example set the sentiment of the rocket date tweet and 2 days before to 1 and 0 to the rest
+def enrichSavedTweets(saved_tweets, rockets):
+
+    return saved_tweets

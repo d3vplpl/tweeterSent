@@ -18,11 +18,8 @@ odp = input('Get Twitter data? [y/n]:')
 if odp == 'y':
     tools.get_Twitter_data('11bitstudios', '2018-01-01', '2018-08-01')
 
-d = pd.read_csv('saved_tweets.csv', delimiter='\t')
+#d = pd.read_csv('saved_tweets.csv', delimiter='\t')
 
-split = 0.7
-d_train = d[:int(split*len(d))]
-d_test = d[int((1-split)*len(d)):]
 
 def build_model(max_features=None, min_df=1, nb_alpha=1.0):
     vectorizer = TfidfVectorizer(max_features=max_features, min_df=min_df)
@@ -61,6 +58,12 @@ def performance(y_true, pred, color="g", ann=True):
     plt.show()
 #performance(d_test.sentiment, pred1)
 #'max_features': 10000, 'min_df': 1, 'nb_alpha': 0.01, 'auc': 0.8656838656838657}
+
+def normalize_feature(data, f_min=-1.0, f_max=1.0):
+    d_min, d_max = min(data), max(data)
+    factor = (f_max - f_min) / (d_max - d_min)
+    normalized = f_min + (data - d_min)*factor
+    return normalized, factor
 bossa_data = tools.prepare_data('11BIT')
 print('bossa data: ', bossa_data)
 res = build_model(10000, 1, 0.01)
@@ -68,11 +71,27 @@ print('res: ', res)
 
 def finding_rocket():
     counter = 0 #we need this to skip first value
-    for day in bossa_data['close price']:
+    for index, row in bossa_data.iterrows():
 
         counter += 1
-        if counter > 2 and (float(day) / float(previous_day) > 1.20):
-            print(day)
-        previous_day = day
+        if counter > 2 and (row['Close'] / previous_close > 1.20):
+            #print(row['Date'], ' ', row['Close'])
+            #print('row: ', row)
+            #df1.loc[df2.index[0]] = df2.iloc[0]
+            rockets.loc[index] = row
+        previous_close = row['Close']
+bossa_data = tools.prepare_data('11BIT')
+rockets = pd.DataFrame(columns=bossa_data.columns)
 
 finding_rocket()
+
+d = pd.read_csv('saved_tweets.csv', delimiter='\t')
+
+d = tools.enrichSavedTweets(d, rockets)
+
+
+split = 0.7
+d_train = d[:int(split*len(d))]
+d_test = d[int((1-split)*len(d)):]
+res = build_model(10000, 1, 0.01)
+print('ROCKETS', rockets)
