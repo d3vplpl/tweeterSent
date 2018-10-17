@@ -85,7 +85,8 @@ rockets = pd.DataFrame(columns=bossa_data.columns)
 finding_rocket()
 
 d = pd.read_csv('saved_tweets.csv', delimiter='\t')
-print('d: ',d)
+print('d: ', d)
+print('type: ', type(rockets) )
 d = tools.enrichSavedTweets(d, rockets)
 
 

@@ -1,5 +1,5 @@
 import zipfile, requests, os, csv
-import numpy as np
+import datetime
 import pandas as pd
 import tweepy
 import secret
@@ -66,8 +66,8 @@ def get_Twitter_data(ticker, since, date_to):
 #for example set the sentiment of the rocket date tweet and 2 days before to 1 and 0 to the rest
 def enrichSavedTweets(saved_tweets, rockets):
 
-    for t in saved_tweets:
-        print('twwet: ', t)
 
-    print ('rockets: ', rockets)
+    for index, row in rockets.iterrows():
+        date1 = datetime.strptime(row['Date'], '%Y%m%d')
+        print('date: ', date1)
     return saved_tweets
