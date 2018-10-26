@@ -48,7 +48,7 @@ def performance(y_true, pred, color="g", ann=True):
     print(y_true, pred[:, 1])
     acc = accuracy_score(y_true, pred[:, 1] > 0.5)
     auc = roc_auc_score(y_true, pred[:, 1])
-    fpr, tpr, thr = roc_curve(y_true, pred[:,1])
+    fpr, tpr, thr = roc_curve(y_true, pred[:, 1])
     plt.plot(fpr, tpr, color, linewidth="3")
     plt.xlabel("False positive rate")
     plt.ylabel("True positive rate")
@@ -59,11 +59,10 @@ def performance(y_true, pred, color="g", ann=True):
 #performance(d_test.sentiment, pred1)
 #'max_features': 10000, 'min_df': 1, 'nb_alpha': 0.01, 'auc': 0.8656838656838657}
 
-def normalize_feature(data, f_min=-1.0, f_max=1.0):
-    d_min, d_max = min(data), max(data)
-    factor = (f_max - f_min) / (d_max - d_min)
-    normalized = f_min + (data - d_min)*factor
-    return normalized, factor
+
+
+
+
 bossa_data = tools.prepare_data('11BIT')
 #print('bossa data: ', bossa_data)
 
@@ -79,16 +78,16 @@ def finding_rocket():
             #df1.loc[df2.index[0]] = df2.iloc[0]
             rockets.loc[index] = row
         previous_close = row['Close']
-bossa_data = tools.prepare_data('11BIT')
-rockets = pd.DataFrame(columns=bossa_data.columns)
 
+
+bossa_data = tools.prepare_data('11BIT')
+rockets = pd.DataFrame(columns=bossa_data.columns)  # this is empty
 finding_rocket()
+print('rockets: ', rockets)
 
 d = pd.read_csv('saved_tweets.csv', delimiter='\t')
-print('d: ', d)
-print('type: ', type(rockets) )
-d = tools.enrichSavedTweets(d, rockets)
 
+d = tools.enrichSavedTweets(d, rockets)
 
 split = 0.7
 d_train = d[:int(split*len(d))]

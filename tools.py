@@ -1,5 +1,5 @@
 import zipfile, requests, os, csv
-import datetime
+from datetime import datetime
 import pandas as pd
 import tweepy
 import secret
@@ -68,6 +68,18 @@ def enrichSavedTweets(saved_tweets, rockets):
 
 
     for index, row in rockets.iterrows():
-        date1 = datetime.strptime(row['Date'], '%Y%m%d')
-        print('date: ', date1)
+        date1 = datetime.strptime(str(row['Date']), '%Y%m%d')
+        #print('date: ', date1)
+        for index2, row2 in saved_tweets.iterrows():
+            date2 = datetime.strptime(str(row2['date']), '%Y-%m-%d %H:%M:%S')
+            date2 = date2.replace(hour=0, minute=0, second=0)
+            if date2 == date1:
+                print('date OK')
     return saved_tweets
+
+
+def normalize_feature(data, f_min=-1.0, f_max=1.0):
+    d_min, d_max = min(data), max(data)
+    factor = (f_max - f_min) / (d_max - d_min)
+    normalized = f_min + (data - d_min)*factor
+    return normalized, factor
