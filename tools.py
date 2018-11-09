@@ -51,13 +51,13 @@ def get_Twitter_data(ticker, since, date_to):
     df = pd.DataFrame({'review': tw_list})  # review is the body of the tweet (the actual text)
     df['date'] = pd.DataFrame({'date': tw_list_dates})
     df['sentiment'] = '5'
-    for index, row in df.iterrows():
-       df.set_value(index, 'sentiment', random.randint(0, 1))
+    #for index, row in df.iterrows():
+    #   df.set_value(index, 'sentiment', random.randint(0, 1))
 
 
     df1 = df.reindex(['date','sentiment', 'review'], axis=1)
     #print(df1)
-    df1.to_csv('saved_tweets.csv', encoding='utf-8', index_label='id', sep='\t')
+    df1.to_csv('saved_tweets.csv', encoding='utf-8', index_label=False, sep='\t')
 
 #get_data()
 #prepare_data('11BIT')
@@ -74,7 +74,10 @@ def enrichSavedTweets(saved_tweets, rockets):
             date2 = datetime.strptime(str(row2['date']), '%Y-%m-%d %H:%M:%S')
             date2 = date2.replace(hour=0, minute=0, second=0)
             if date2 == date1:
-                print('date OK')
+                print('date matches ')
+                row2['sentiment'] = 2
+    saved_tweets.to_csv('saved_tweets.csv', encoding='utf-8', index_label=False,  sep='\t')
+
     return saved_tweets
 
 
