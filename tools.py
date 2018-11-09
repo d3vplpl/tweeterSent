@@ -31,7 +31,7 @@ def prepare_data(ticker):
     closes = pd.read_csv(os.path.join(path_mst, ticker+'.mst'))
     closes.rename(index=str, columns={'<TICKER>': 'Ticker', '<DTYYYYMMDD>': 'Date', '<CLOSE>': 'Close', '<VOL>':'Vol'},inplace=True)
     return closes
-    # to już koniec! reszta jest obsolete, zwracamy pandas
+
 
 #the result of this method is saved tweets structure csv with fake sentiment
 def get_Twitter_data(ticker, since, date_to):
@@ -53,14 +53,10 @@ def get_Twitter_data(ticker, since, date_to):
     df['sentiment'] = '5'
     #for index, row in df.iterrows():
     #   df.set_value(index, 'sentiment', random.randint(0, 1))
-
-
     df1 = df.reindex(['date','sentiment', 'review'], axis=1)
     #print(df1)
     df1.to_csv('saved_tweets.csv', encoding='utf-8', index_label=False, sep='\t')
 
-#get_data()
-#prepare_data('11BIT')
 
 #this method should open the saved tweets csv and using rockets dates fill the sentiments.
 #for example set the sentiment of the rocket date tweet and 2 days before to 1 and 0 to the rest

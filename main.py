@@ -1,10 +1,5 @@
-import tweepy
-import got3 as got
 import pandas as pd
 import tools
-from textblob import TextBlob
-import scipy
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve
@@ -16,7 +11,7 @@ if odp == 'y':
     tools.get_data()
 odp = input('Get Twitter data? [y/n]:')
 if odp == 'y':
-    tools.get_Twitter_data('11bitstudios', '2018-01-01', '2018-08-01')
+    tools.get_Twitter_data('11bitstudios', '2014-11-01', '2014-12-30')
 
 #d = pd.read_csv('saved_tweets.csv', delimiter='\t')
 
@@ -60,9 +55,6 @@ def performance(y_true, pred, color="g", ann=True):
 #'max_features': 10000, 'min_df': 1, 'nb_alpha': 0.01, 'auc': 0.8656838656838657}
 
 
-
-
-
 bossa_data = tools.prepare_data('11BIT')
 #print('bossa data: ', bossa_data)
 
@@ -95,4 +87,4 @@ d_test = d[int((1-split)*len(d)):]
 res = build_model(10000, 1, 0.01)
 
 #print('res: ', res)
-#print('ROCKETS', rockets)
+print('ROCKETS', rockets)
