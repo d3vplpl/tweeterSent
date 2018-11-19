@@ -40,7 +40,7 @@ def get_Twitter_data(ticker, since, date_to):
     auth.set_access_token(secret.access_token, secret.access_token_secret)
 
     tweetCriteria = got.manager.TweetCriteria().setQuerySearch(ticker).setSince(since). \
-        setUntil(date_to).setMaxTweets(1000)
+        setUntil(date_to).setMaxTweets(2000) # to jest ilosc
     tweets = got.manager.TweetManager.getTweets(tweetCriteria)
     tw_list = []
     tw_list_dates = []
