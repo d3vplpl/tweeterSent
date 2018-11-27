@@ -11,7 +11,7 @@ if odp == 'y':
     tools.get_data()
 odp = input('Get Twitter data? [y/n]:')
 if odp == 'y':
-    tools.get_Twitter_data('11bitstudios', '2014-11-01', '2014-12-30')
+    tools.get_Twitter_data('11bitstudios', '2014-12-01', '2014-12-30')
 
 #d = pd.read_csv('saved_tweets.csv', delimiter='\t')
 

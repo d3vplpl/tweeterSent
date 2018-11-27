@@ -5,6 +5,7 @@ import tweepy
 import secret
 import got3 as got
 import random
+no_of_tweets_limit = 100000
 
 def get_data():
     url = 'http://bossa.pl/pub/metastock/mstock/mstall.zip'
@@ -40,7 +41,7 @@ def get_Twitter_data(ticker, since, date_to):
     auth.set_access_token(secret.access_token, secret.access_token_secret)
 
     tweetCriteria = got.manager.TweetCriteria().setQuerySearch(ticker).setSince(since). \
-        setUntil(date_to).setMaxTweets(2000) # to jest ilosc
+        setUntil(date_to).setMaxTweets(no_of_tweets_limit) # to jest ilosc limitu tweetow
     tweets = got.manager.TweetManager.getTweets(tweetCriteria)
     tw_list = []
     tw_list_dates = []
