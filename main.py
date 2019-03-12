@@ -11,7 +11,7 @@ if odp == 'y':
     tools.get_data()
 odp = input('Get Twitter data? [y/n]:')
 if odp == 'y':
-    tools.get_Twitter_data('11bitstudios', '2014-12-01', '2014-12-30')
+    tools.get_Twitter_data('11bitstudios', '2014-01-01', '2018-12-30')
 
 #d = pd.read_csv('saved_tweets.csv', delimiter='\t')
 
@@ -56,18 +56,14 @@ def performance(y_true, pred, color="g", ann=True):
 
 
 bossa_data = tools.prepare_data('11BIT')
-#print('bossa data: ', bossa_data)
 
 
 def finding_rocket():
-    counter = 0 #we need this to skip first value
+    counter = 0  # we need this to skip first value
     for index, row in bossa_data.iterrows():
 
         counter += 1
-        if counter > 2 and (row['Close'] / previous_close > 1.20):
-            #print(row['Date'], ' ', row['Close'])
-            #print('row: ', row)
-            #df1.loc[df2.index[0]] = df2.iloc[0]
+        if counter > 2 and (row['Close'] / previous_close > 1.15):
             rockets.loc[index] = row
         previous_close = row['Close']
 
@@ -88,3 +84,7 @@ res = build_model(10000, 1, 0.01)
 
 #print('res: ', res)
 print('ROCKETS', rockets)
+
+#this is example how to use the learned model:
+review = "This movie is bad"
+#print(res.predict(vectorizer.transform([review]))[0])
