@@ -11,7 +11,7 @@ if odp == 'y':
     tools.get_data()
 odp = input('Get Twitter data? [y/n]:')
 if odp == 'y':
-    tools.get_Twitter_data('11bitstudios', '2014-01-01', '2018-12-30')
+    tools.get_Twitter_data('11bitstudios', '2014-01-01', '2019-03-01')
 
 #d = pd.read_csv('saved_tweets.csv', delimiter='\t')
 
@@ -75,8 +75,8 @@ print('rockets: ', rockets)
 
 d = pd.read_csv('saved_tweets.csv', delimiter='\t')
 
-d = tools.enrichSavedTweets(d, rockets)
-
+#d = tools.enrichSavedTweets(d, rockets)
+d = tools.set_sentiment_for_given_date(d, '2018-10-12')
 split = 0.7
 d_train = d[:int(split*len(d))]
 d_test = d[int((1-split)*len(d)):]

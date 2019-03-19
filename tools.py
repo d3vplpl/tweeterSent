@@ -7,6 +7,7 @@ import secret
 import got3 as got
 import random
 no_of_tweets_limit = 1000000
+#20144 tweetów pobierało się 35 minut
 
 def get_data():
     url = 'http://bossa.pl/pub/metastock/mstock/mstall.zip'
@@ -28,10 +29,11 @@ def get_data():
 #CURRENT_YEAR = str(date.today().year)
 path_mst = (os.path.join(os.path.curdir, 'mst'))
 
+
 def prepare_data(ticker):
 
     closes = pd.read_csv(os.path.join(path_mst, ticker+'.mst'))
-    closes.rename(index=str, columns={'<TICKER>': 'Ticker', '<DTYYYYMMDD>': 'Date', '<CLOSE>': 'Close', '<VOL>':'Vol'},inplace=True)
+    closes.rename(index=str, columns={'<TICKER>': 'Ticker', '<DTYYYYMMDD>': 'Date', '<CLOSE>': 'Close', '<VOL>': 'Vol'},inplace=True)
     return closes
 
 
@@ -51,29 +53,43 @@ def get_Twitter_data(ticker, since, date_to):
         tw_list_dates.append(tweet.date)
     df = pd.DataFrame({'review': tw_list})  # review is the body of the tweet (the actual text)
     df['date'] = pd.DataFrame({'date': tw_list_dates})
-    df['sentiment'] = '5'
+    df['sentiment'] = '0'
     df1 = df.reindex(['date', 'sentiment', 'review'], axis=1)
     df1.to_csv('saved_tweets.csv', encoding='utf-8', index_label=False, sep='\t')
 
 
 #this method should open the saved tweets csv and using rockets dates fill the sentiments.
-#for example set the sentiment of the rocket date tweet and 2 days before to 2 and leave rest at default 5
+#for example set the sentiment of the rocket date tweet and 2 days before to 2 and leave rest at default 0
 def enrichSavedTweets(saved_tweets, rockets):
+    saved_tweets['sentiment'] = '0'
+    for index, row in saved_tweets.iterrows():
+        date_tweet = datetime.strptime(str(row['date']), '%Y-%m-%d %H:%M:%S')
+        date_tweet = date_tweet.replace(second=0)
 
-    for index, row in rockets.iterrows():
-        date_rocket = datetime.strptime(str(row['Date']), '%Y%m%d')
-        #print('date: ', date1)
-        for index2, row2 in saved_tweets.iterrows():
-            date_tweet = datetime.strptime(str(row2['date']), '%Y-%m-%d %H:%M:%S')
-            date_tweet = date_tweet.replace(hour=0, minute=0, second=0)
-            if date_rocket - timedelta(days=2) == date_tweet:
+        for index2, row2 in rockets.iterrows():
+            date_rocket = datetime.strptime(str(row2['Date']),  '%Y%m%d')
+            date_rocket = date_rocket.replace(hour=0, minute=0, second=0)
+            print ('Comaparing ', (date_tweet-timedelta(days=2)), ' and ', date_rocket)
+            if date_tweet + timedelta(days=2) == date_rocket:
                 print("date of tweet: ", date_tweet, "matches date of rocket: ", date_rocket,
                       "so this is a tweet that indicates rocket's date")
-                saved_tweets.at[index2, 'sentiment'] = 2
+                saved_tweets.at[index, 'sentiment'] = '1'
 
     saved_tweets.to_csv('saved_tweets.csv', encoding='utf-8', index_label=False,  sep='\t')
-
+    print('Enrichment complete')
     return saved_tweets
+
+#this method should set sentiment for the date provided
+def set_sentiment_for_given_date(saved_tweets, given_date):
+    saved_tweets['sentiment'] = '0'
+    for index, row in saved_tweets.iterrows():
+        date_tweet = datetime.strptime(str(row['date']), '%Y-%m-%d %H:%M:%S')
+        date_tweet = date_tweet.replace(second=0)
+        if  given_date == date_tweet:
+            print("Given date quals tweet date")
+            saved_tweets.at[index, 'sentiment'] = '1'
+    saved_tweets.to_csv('saved_tweets.csv', encoding='utf-8', index_label=False, sep='\t')
+    print('setting complete')
 
 
 # this method should shift marked sentiments by amount of days so they would indicate the signal earlier
